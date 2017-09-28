@@ -7,11 +7,33 @@ Numbers corresponds to chapter numbers from book.
 Covered topics:
 
 6. Types and Declarations
+* 1 Done
+* 2 Done
+* 7 Done
+* 12 Done
 7. Pointers, Arrays, and References
+* 1 Done
+* 3 Done
+* 8 Done
+* 9 Done
 8. Structures, Unions, and Enumerations
+* 1 Done
+* 4 Done
+* 5 Done
 9. Statements
+* 1 Done
+* 2 Done
+* 4 Done
+* 5 Done
+* 7 Done
 10. Expressions
+* 7 Done
+* 9 Done
+* 10 Done
+* 11 Done
+* 12 Done
 11. Select Operations
+* 2 Done
 12. Functions
 * 1 Done
 * 2 Done
