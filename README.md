@@ -54,6 +54,19 @@ Numbers corresponds to chapter numbers from book.
 | 12-20 | Factorial w/o recursion | 1 | Done   |
 | 12-21 | Add one day, one month and one year to a Date struct | 2 | In dev |
 | **13** | **Exception Handling** | | |
+| 13-1 | `Checked_ptr<T>` that points to an element of an array with run-time errors | 3 | TODO |
+| 13-2 | Search a binary tree of nodes based on a `char*` field | 3 | TODO |
+| 13-3 | Class `Int` that throws rather than overflowing or underflowing | 3 | TODO |
+| 13-4 | C++ equivalents that throw for C file functions | 2.5 | TODO |
+| 13-5 | `Vector` template with `Range` and `Size` exceptions | 2.5 | TODO |
+| 13-6 | Sum of a `Vector` w/o examining the size | 1 | TODO |
+| 13-8 | Modified `main()` that catches all exceptions and use `abort()` | 1 | TODO |
+| 13-9 | Class or template for callbacks | 2 | TODO |
+| 13-11 | Performance of exception throwing at different levels | 2 | TODO |
+| 13-13 | Modified calculator that uses exceptions | 2 | TODO |
+| 13-14 | Functions `plus, minus, multiply, divide` that check for overflow/underflow | 2.5 | TODO |
+| 13-15 | Modified calculator that uses functions from 13-14 | 2 | TODO |
+
 
 ## TODO
 1. Table with each exercise name and it's status
