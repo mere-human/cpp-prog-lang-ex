@@ -69,7 +69,6 @@ Numbers corresponds to chapter numbers from book.
 
 
 ## TODO
-1. Table with each exercise name and it's status
 1. Add each file and directory
 1. Cleanup each file and it's description
 1. Integrate with CMake or similar (optional)
