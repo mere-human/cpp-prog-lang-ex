@@ -30,3 +30,9 @@
 # Visual Studio
 *.ilk
 *.pdb
+**/.vs/*
+**/Debug/*
+*.sln
+*.vcxproj*
+*.db
+*.opendb
