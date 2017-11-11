@@ -5,17 +5,12 @@ except that it throws exceptions rather than overflowing or underflowing.
 
 #include <iostream>
 #include <exception>
+#include <cassert>
 
-enum class ErrorType
+struct IntError : std::exception
 {
-    Unknown,
-    Overflow,
-    Underflow
-};
-
-struct IntError
-{
-    const ErrorType type;
+	explicit IntError(const char* const msg) : std::exception{ msg }
+	{}
 };
 
 class Int
@@ -23,54 +18,11 @@ class Int
 public:
     using Type = int;
 
-    // avoid any implicit conversion
+    // avoid any implicit conversions
+
     explicit Int(Type value = {}) : _value{value}
     {}
 
-    Int operator-() const
-    {
-        if (_value == MaxValue) throw IntError{ErrorType::Underflow};
-        return Int(-_value);
-    }
-
-    Int operator+(const Int& other) const
-    {
-        // here is max/min value is analyzed before any computations
-        if (_value > 0)
-        {
-            if (other._value > 0)
-            {
-                if ((MaxValue - _value - other._value) < 0)
-                    throw IntError{ErrorType::Overflow};
-            }
-        }
-        else if (_value < 0)
-        {
-            if (other._value < 0)
-            {
-                if ((MinValue - _value - other._value) > 0)
-                    throw IntError{ErrorType::Underflow};
-            }
-        }
-        return Int(_value + other._value);
-    }
-
-    Int operator-(const Int& other) const
-    {
-        // just reuse
-        return operator+(-other);
-    }
-
-    Int operator*(const Int& other) const
-    {
-        // a*b > c if and only if a > c/b
-        if ((_value == 0) || (other._value == 0)) return Int{0};
-        if (_value > (MaxValue / other._value)) throw IntError{ErrorType::Overflow};
-        if (_value < (MinValue / other._value)) throw IntError{ErrorType::Underflow};
-        return Int{_value * other._value};
-    }
-
-    // avoid any implicit conversion
     const Type& get() const
     {
         return _value;
@@ -82,101 +34,123 @@ private:
     Type _value;
 };
 
+Int operator-(const Int& a)
+{
+	if (a.get() == Int::MinValue) throw IntError{ "minus overflow" };
+	return Int(-a.get());
+}
+
+Int operator+(const Int& a, const Int& b)
+{
+	if ((a.get() > 0) && (b.get() > 0))
+	{
+		// a + b > MAX => MAX - a - b < 0 => error
+		if ((Int::MaxValue - a.get() - b.get()) < 0)
+			throw IntError{ "add overflow" };
+	}
+	else if ((a.get() < 0) && (b.get() < 0))
+	{
+		// a + b < MIN => MIN - a - b > 0 => error
+		if ((Int::MinValue - a.get() - b.get()) > 0)
+			throw IntError{ "add underflow" };
+	}
+	return Int(a.get() + b.get());
+}
+
+Int operator-(const Int& a, const Int& b)
+{
+	// just reuse
+	return a + (-b);
+}
+
+Int operator*(const Int& a, const Int& b)
+{
+	// check for zero
+	if ((a.get() == 0) || (b.get() == 0)) return Int{ 0 };
+	// check for negation
+	if (a.get() == -1) return -Int{ b.get() };
+	if (b.get() == -1) return -Int{ a.get() };
+	// a * b > MAX => a > MAX / b => error
+	if (a.get() > (Int::MaxValue / b.get())) throw IntError{ "mult overflow" };
+	if (a.get() < (Int::MinValue / b.get())) throw IntError{ "mult overflow" };
+	return Int(a.get() * b.get());
+}
+
+Int operator/(const Int& a, const Int& b)
+{
+	if (b.get() == 0) throw IntError{ "division by zero" };
+	// MIN/-1 => error
+	if ((a.get() == Int::MinValue) && (b.get() == -1))
+                throw IntError{ "division overflow" };
+	return Int(a.get() / b.get());
+}
+
 std::ostream& operator<<(std::ostream& os, const Int& i)
 {
     os << i.get();
     return os;
 }
 
+bool operator==(const Int& a, int b)
+{
+	return a.get() == b;
+}
+
+// NOTE: Testing with such macros and assert is not very good idea
+// However, I wanted to cover some cases and do not want to use other libs
+
+#define SHOULD_THROW(action, message)\
+	try\
+	{\
+		action;\
+		assert(!"Exception is expected");\
+	}\
+	catch (IntError& e)\
+	{\
+		if (e.what() != std::string{message}) throw;\
+	}\
+
 int main()
 {
     try
     {
         // unary minus
-        std::cout << -Int{1} << "\n";
-        try
-        {
-            std::cout << -Int{Int::MaxValue} << "\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Underflow) throw;
-        }
+		assert(-Int{ 1 } == -1);
+		assert(-Int{ Int::MaxValue } == Int::MinValue + 1);
+		SHOULD_THROW(-Int{ Int::MinValue }, "minus overflow");
 
         // binary plus
-        std::cout << Int{0} + Int{0} << "\n";
-        std::cout << Int{1} + Int{0} << "\n";
-        std::cout << Int{0} + Int{1} << "\n";
-        std::cout << Int{1} + Int{2} << "\n";
-        std::cout << Int{-1} + Int{2} << "\n";
-        std::cout << Int{-1} + Int{-2} << "\n";
-        try
-        {
-            std::cout << Int{Int::MaxValue} + Int{2} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Overflow) throw;
-        }
-        try
-        {
-            std::cout << Int{Int::MinValue} + Int{-2} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Underflow) throw;
-        }
+		assert((Int{ 0 } + Int{ 0 }) == 0);
+		assert((Int{ 1 } + Int{ 0 }) == 1);
+        assert((Int{ 0 } + Int{ 1 }) == 1);
+        assert((Int{ 1 } + Int{ 2 }) == 3);
+		assert((Int{ -1 } + Int{ 2 }) == 1);
+		assert((Int{ -1 } + Int{ -2 }) == -3);
+		SHOULD_THROW(Int{ Int::MaxValue } + Int{ 2 }, "add overflow");
+		SHOULD_THROW(Int{ Int::MinValue } + Int{ -2 }, "add underflow");
 
         // binary minus
-        std::cout << Int{2} - Int{1} << "\n";
-        try
-        {
-            std::cout << Int{Int::MinValue} - Int{2} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Underflow) throw;
-        }
-        try
-        {
-            std::cout << Int{0} - Int{Int::MaxValue} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Underflow) throw;
-        }
+		assert((Int{ 2 } - Int{ 1 }) == 1);
+		SHOULD_THROW(Int{ Int::MinValue } - Int{ 2 }, "add underflow");
+		assert((Int{ 0 } - Int{ Int::MaxValue }) == Int::MinValue + 1);
 
         // multiplication
-        std::cout << Int{2} * Int{2} << "\n";
-        try
-        {
-            std::cout << Int{Int::MaxValue} * Int{2} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Overflow) throw;
-        }
+		assert((Int{ 2 } * Int{ 2 }) == 4);
+		SHOULD_THROW(Int{ Int::MaxValue } * Int{ 2 }, "mult overflow");
+		SHOULD_THROW(Int{ Int::MaxValue } * Int{ Int::MaxValue }, "mult overflow");
+		assert((Int{ Int::MaxValue } * Int{ -1 }) == Int::MinValue + 1);
+		assert((Int{ -1 } * Int{ Int::MaxValue }) == Int::MinValue + 1);
+		SHOULD_THROW(Int{ 2 } * Int{ Int::MinValue }, "mult overflow");
+		SHOULD_THROW(Int{ Int::MinValue } * Int{ -1 }, "minus overflow");
 
-        try
-        {
-            std::cout << Int{Int::MaxValue} * Int{Int::MaxValue} << "\n";
-            std::cout << "Should not get there\n";
-        }
-        catch (IntError& e)
-        {
-            if (e.type != ErrorType::Overflow) throw;
-        }
-
-        std::cout << Int{-1} * Int{Int::MaxValue} << "\n";
+		// division
+		assert((Int{ 5 } / Int{ 2 }) == 2);
+		SHOULD_THROW(Int{ 1 } / Int{ 0 }, "division by zero");
+		SHOULD_THROW(Int{ Int::MinValue } / Int{ -1 }, "division overflow");
     }
-    catch (...)
+    catch (std::exception& e)
     {
-        std::cout << "Unexpected error\n";
+        std::cout << "Unexpected error: " << e.what() << "\n";
     }
     return 0;
 }
