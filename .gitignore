@@ -36,3 +36,6 @@
 *.vcxproj*
 *.db
 *.opendb
+
+# Other
+*.tmp
