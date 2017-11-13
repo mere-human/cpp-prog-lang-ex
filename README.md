@@ -58,7 +58,7 @@ Numbers corresponds to chapter numbers from book.
 | 13-2 | Search a binary tree of nodes based on a `char*` field | 3 | TODO |
 | 13-3 | Class `Int` that throws rather than overflowing or underflowing | 3 | Done |
 | 13-4 | C++ equivalents that throw for C file functions | 2.5 | Done |
-| 13-5 | `Vector` template with `Range` and `Size` exceptions | 2.5 | TODO |
+| 13-5 | `Vector` template with `Range` and `Size` exceptions | 2.5 | In dev |
 | 13-6 | Sum of a `Vector` w/o examining the size | 1 | TODO |
 | 13-8 | Modified `main()` that catches all exceptions and use `abort()` | 1 | TODO |
 | 13-9 | Class or template for callbacks | 2 | TODO |
