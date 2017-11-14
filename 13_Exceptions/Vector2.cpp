@@ -25,7 +25,7 @@ struct vector_base
 	vector_base& operator=(const vector_base&) = delete;
 
 	vector_base(vector_base&& other)
-		:	alloc { other.alloc}, elem{ other.elem }, space{ other.space },
+		:	alloc { std::move(other.alloc) }, elem{ other.elem }, space{ other.space },
 			last{ other.last }
 	{
 		other.elem = other.space = other.last = nullptr; // no longer owns memory
@@ -33,7 +33,12 @@ struct vector_base
 
 	vector_base& operator=(vector_base&& other)
 	{
-		std::swap(*this, other);
+		alloc.deallocate(elem, last - elem);
+		elem = space = last = nullptr;
+		std::swap(alloc, other.alloc);
+		std::swap(elem, other.elem);
+		std::swap(space, other.space);
+		std::swap(last, other.last);
 		return *this;
 	}
 };
@@ -59,6 +64,13 @@ class vector
 			new(static_cast<void*>(&*oo)) T{ std::move(*b) };
 			b->~T(); // destroy
 		}
+	}
+
+	template<typename In>
+	void destroy(In b, In e)
+	{
+		for (; b != e; ++b)
+			b->~T();
 	}
 
 public:
@@ -184,16 +196,28 @@ public:
 	{
 		if (n <= capacity()) // never decrease capacity
 			return;
-		vector_base<T, A> b(vb.alloc, n); // make a vector with the new capacity
-		uninitialized_move(elem, elem + size(), b.elem); // move elements
+		vector_base<T, A> b(vb.alloc, n); // get new space
+		uninitialized_move(vb.elem, vb.elem + size(), b.elem); // move elements
+		b.space = b.elem + size(); // set size
 		std::swap(vb, b); // install new base
 		// implicitly release old value
 	}
 
 	// increase size to n
-	void resize(size_type n)
+	void resize(size_type n, const T& val = T{})
 	{
-
+		reserve(n);
+		if (size() < n)
+		{
+			// construct new elements
+			std::uninitialized_fill(vb.elem + size(), vb.elem + n, val);
+		}
+		else
+		{
+			// destroy surplus elements
+			destroy(vb.elem + size(), vb.elem + n);
+		}
+		vb.space = vb.last = vb.elem + n;
 	}
 
 	void clear()
@@ -211,5 +235,6 @@ public:
 int main()
 {
 	vector<int> v(4, 1);
+	v.resize(5);
 	return 0;
 }
