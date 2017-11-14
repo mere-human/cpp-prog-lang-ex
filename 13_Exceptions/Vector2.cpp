@@ -151,7 +151,7 @@ public:
 	vector& operator=(vector&& a)
 	{
 		clear();
-		std::swap(*this, a);
+		std::swap(vb, a.vb);
 		return *this;
 	}
 
@@ -223,7 +223,7 @@ public:
 
 	void clear()
 	{
-
+		destroy_elements();
 	}
 
 	// add an element to end
@@ -247,5 +247,8 @@ int main()
 	vector<int> v(4, 1);
 	v.resize(5);
 	v.push_back(2);
+	vector<int> v2(2);
+	v2 = std::move(v);
+	v2.push_back(3);
 	return 0;
 }
