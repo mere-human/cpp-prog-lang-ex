@@ -42,12 +42,25 @@ template<typename T, typename A = std::allocator<T>>
 class vector
 {
 	vector_base<T, A> vb;
+
 	void destroy_elements()
 	{
 		for (iterator p = vb.elem; p != vb.space; ++p)
 			vb.alloc.destroy(p); // p->~T();
 		vb.space = vb.elem;
 	}
+
+	template<typename In, typename Out>
+	void uninitialized_move(In b, In e, Out oo)
+	{
+		for (; b != e; ++b, ++oo)
+		{
+			// move construct
+			new(static_cast<void*>(&*oo)) T{ std::move(*b) };
+			b->~T(); // destroy
+		}
+	}
+
 public:
 	using size_type = typename A::size_type;
 	using iterator = T*;
@@ -154,10 +167,27 @@ public:
 		return vb.space;
 	}
 
+	// this is flaved because not all types have default constructor
+	//// increase capacity to n
+	//void reserve(size_type n)
+	//{
+	//	if (n <= capacity()) // never decrease capacity
+	//		return;
+	//	vector<T, A> v(capacity()); // make a vector with the new capacity
+	//	std::copy(elem, elem + size(), v.begin()); // copy elements
+	//	std::swap(*this, v); // install new value
+	//	// implicitly release old value
+	//}
+
 	// increase capacity to n
 	void reserve(size_type n)
 	{
-
+		if (n <= capacity()) // never decrease capacity
+			return;
+		vector_base<T, A> b(vb.alloc, n); // make a vector with the new capacity
+		uninitialized_move(elem, elem + size(), b.elem); // move elements
+		std::swap(vb, b); // install new base
+		// implicitly release old value
 	}
 
 	// increase size to n
