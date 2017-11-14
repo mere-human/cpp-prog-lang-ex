@@ -1,7 +1,3 @@
-/*
-[5] (*2.5) Write a complete Vector template with Range and Size exceptions
-*/
-
 #include <memory>
 
 template<typename T, typename A = std::allocator<T>>

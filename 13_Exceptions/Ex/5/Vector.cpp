@@ -1,4 +1,11 @@
+/*
+[5] (*2.5) Write a complete Vector template with Range and Size exceptions
+*/
+
 #include <memory> // allocator
+#include <string>
+#include <sstream>
+#include <iostream>
 
 // memory structure for vector
 // deals with memory and leaves concerns about objects to vector
@@ -8,12 +15,12 @@ struct vector_base
 	A alloc;  // allocator
 	T* elem;  // start of allocation
 	T* space; // end of element sequence,
-                  // start of space allocated for possible expansion
+			  // start of space allocated for possible expansion
 	T* last;  // end of allocated space
 
 	vector_base(const A& a, typename A::size_type n)
-		:	alloc{ a }, elem{ alloc.allocate(n) }, space{ elem + n },
-			last{ elem + n }
+		: alloc{ a }, elem{ alloc.allocate(n) }, space{ elem + n },
+		last{ elem + n }
 	{}
 
 	~vector_base()
@@ -26,8 +33,8 @@ struct vector_base
 	vector_base& operator=(const vector_base&) = delete;
 
 	vector_base(vector_base&& other)
-		:	alloc { std::move(other.alloc) }, elem{ other.elem },
-                        space{ other.space }, last{ other.last }
+		: alloc{ std::move(other.alloc) }, elem{ other.elem },
+		space{ other.space }, last{ other.last }
 	{
 		other.elem = other.space = other.last = nullptr; // no longer owns memory
 	}
@@ -44,35 +51,20 @@ struct vector_base
 	}
 };
 
+struct RangeException
+{
+	std::string msg;
+};
+
+struct SizeException
+{
+	std::string msg;
+};
+
 template<typename T, typename A = std::allocator<T>>
 class vector
 {
 	vector_base<T, A> vb;
-
-	void destroy_elements()
-	{
-		for (iterator p = vb.elem; p != vb.space; ++p)
-			vb.alloc.destroy(p); // p->~T();
-		vb.space = vb.elem;
-	}
-
-	template<typename In, typename Out>
-	void uninitialized_move(In b, In e, Out oo)
-	{
-		for (; b != e; ++b, ++oo)
-		{
-			// move construct
-			new(static_cast<void*>(&*oo)) T{ std::move(*b) };
-			b->~T(); // destroy
-		}
-	}
-
-	template<typename In>
-	void destroy(In b, In e)
-	{
-		for (; b != e; ++b)
-			b->~T();
-	}
 
 public:
 	using size_type = typename A::size_type;
@@ -94,27 +86,6 @@ public:
 	vector(vector&& a)
 		: vb{ std::move(a.vb) } // transfer ownership
 	{}
-
-	//// straightforward implementation
-	//vector& operator=(const vector& a)
-	//{
-	//	vector_base<T, A> b{ a.vb.alloc, a.size() }; // get the memory
-	//	std::uninitialized_copy(a.begin(), a.end(), vb.elem); // copy elements
-	//	destroy_elements(); // destroy elements
-	//	std::swap(vb, b); // transfer ownership
-	//	return *this; // implicitly destroy the old value
-	//}
-
-	//// avoid repetition
-	//vector& operator=(const vector& a)
-	//{
-	//	// possible optimizations:
-	//	// 1) capacity of destination vector is large enough so don't need to allocate new memory
-	//	// 2) element assignment may be more efficient than destruction followed by construction
-	//	vector temp{ a }; // copy allocator
-	//	std::swap(*this, temp); // swap representations
-	//	return *this;
-	//}
 
 	// optimized version
 	vector& operator=(const vector& a)
@@ -180,17 +151,17 @@ public:
 		return vb.space;
 	}
 
-	//// increase capacity to n
-	//// this is flawed because not all types have default constructor
-	//void reserve(size_type n)
-	//{
-	//	if (n <= capacity()) // never decrease capacity
-	//		return;
-	//	vector<T, A> v(capacity()); // make a vector with the new capacity
-	//	std::copy(elem, elem + size(), v.begin()); // copy elements
-	//	std::swap(*this, v); // install new value
-	//	// implicitly release old value
-	//}
+	const T& at(size_type pos) const
+	{
+		check_range(pos);
+		return vb.elem[pos];
+	}
+
+	T& at(size_type pos)
+	{
+		check_range(pos);
+		return vb.elem[pos];
+	}
 
 	// increase capacity to n
 	void reserve(size_type n)
@@ -201,7 +172,7 @@ public:
 		uninitialized_move(vb.elem, vb.elem + size(), b.elem); // move elements
 		b.space = b.elem + size(); // set size
 		std::swap(vb, b); // install new base
-		// implicitly release old value
+						  // implicitly release old value
 	}
 
 	// increase size to n
@@ -240,15 +211,80 @@ public:
 		vb.alloc.construct(&vb.elem[sz], val); // add val at end
 		++vb.space; // increment size
 	}
+
+	// removes the last element
+	// NOTE: std::vector::pop_back on empty container is undefined
+	// let's make it throw
+	void pop_back()
+	{
+		if (size() == 0)
+			throw SizeException{ "Container is empty" };
+		resize(size() - 1);
+	}
+
+private:
+
+	void destroy_elements()
+	{
+		for (iterator p = vb.elem; p != vb.space; ++p)
+			vb.alloc.destroy(p); // p->~T();
+		vb.space = vb.elem;
+	}
+
+	template<typename In, typename Out>
+	void uninitialized_move(In b, In e, Out oo)
+	{
+		for (; b != e; ++b, ++oo)
+		{
+			// move construct
+			new(static_cast<void*>(&*oo)) T{ std::move(*b) };
+			b->~T(); // destroy
+		}
+	}
+
+	template<typename In>
+	void destroy(In b, In e)
+	{
+		for (; b != e; ++b)
+			b->~T();
+	}
+
+	void check_range(size_type pos)
+	{
+		if (pos >= size())
+		{
+			std::ostringstream buf;
+			buf << "Index " << pos << " is out of range [0:" << size() << ")";
+			throw RangeException{ buf.str() };
+		}
+	}
 };
 
 int main()
 {
-	vector<int> v(4, 1);
-	v.resize(5);
+	vector<int> v(2, 1);
+	v.resize(3);
 	v.push_back(2);
-	vector<int> v2(2);
-	v2 = std::move(v);
-	v2.push_back(3);
+	try
+	{
+		v.at(1) = 5;
+		v.at(5) = 1;
+	}
+	catch (RangeException& e)
+	{
+		std::cerr << "Error: " << e.msg << "\n";
+	}
+	for (size_t i = 0; i != v.size(); ++i)
+		std::cout << v.at(i) << " ";
+	std::cout << "\n";
+	try
+	{
+		while (true)
+			v.pop_back();
+	}
+	catch (SizeException& e)
+	{
+		std::cerr << "Error: " << e.msg << "\n";
+	}
 	return 0;
 }
