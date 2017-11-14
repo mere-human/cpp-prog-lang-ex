@@ -7,7 +7,8 @@ struct vector_base
 {
 	A alloc;  // allocator
 	T* elem;  // start of allocation
-	T* space; // end of element sequence, start of space allocated for possible expansion
+	T* space; // end of element sequence,
+                  // start of space allocated for possible expansion
 	T* last;  // end of allocated space
 
 	vector_base(const A& a, typename A::size_type n)
@@ -25,8 +26,8 @@ struct vector_base
 	vector_base& operator=(const vector_base&) = delete;
 
 	vector_base(vector_base&& other)
-		:	alloc { std::move(other.alloc) }, elem{ other.elem }, space{ other.space },
-			last{ other.last }
+		:	alloc { std::move(other.alloc) }, elem{ other.elem },
+                        space{ other.space }, last{ other.last }
 	{
 		other.elem = other.space = other.last = nullptr; // no longer owns memory
 	}
@@ -179,8 +180,8 @@ public:
 		return vb.space;
 	}
 
-	// this is flaved because not all types have default constructor
 	//// increase capacity to n
+	//// this is flawed because not all types have default constructor
 	//void reserve(size_type n)
 	//{
 	//	if (n <= capacity()) // never decrease capacity
@@ -226,9 +227,18 @@ public:
 	}
 
 	// add an element to end
-	void push_back(const T& e)
+	// vector remains unchanged if add failed
+	void push_back(const T& val)
 	{
-
+		const auto sz = size();
+		if (capacity() == sz) // no more free space; reallocate
+		{
+			// grow or start with 8
+			// however, mathematically optimal factor is 1.618
+			reserve(sz ? sz * 2 : 8);
+		}
+		vb.alloc.construct(&vb.elem[sz], val); // add val at end
+		++vb.space; // increment size
 	}
 };
 
@@ -236,5 +246,6 @@ int main()
 {
 	vector<int> v(4, 1);
 	v.resize(5);
+	v.push_back(2);
 	return 0;
 }
