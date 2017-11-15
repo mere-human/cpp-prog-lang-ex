@@ -55,7 +55,7 @@ Numbers corresponds to chapter numbers from book.
 | 12-21 | Add one day, one month and one year to a Date struct | 2 | In dev |
 | **13** | **Exception Handling** | | |
 | 13-1 | `Checked_ptr<T>` that points to an element of an array with run-time errors | 3 | Done |
-| 13-2 | Search a binary tree of nodes based on a `char*` field | 3 | TODO |
+| 13-2 | Search a binary tree of nodes based on a `char*` field | 3 | Done |
 | 13-3 | Class `Int` that throws rather than overflowing or underflowing | 3 | Done |
 | 13-4 | C++ equivalents that throw for C file functions | 2.5 | Done |
 | 13-5 | `Vector` template with `Range` and `Size` exceptions | 2.5 | Done |
