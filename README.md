@@ -64,7 +64,7 @@ Numbers corresponds to chapter numbers from book.
 | 13-9 | Class or template for callbacks | 2 | Done |
 | 13-11 | Performance of exception throwing at different levels | 2 | TODO |
 | 13-13 | Modified calculator that uses exceptions | 2 | TODO |
-| 13-14 | Functions `plus, minus, multiply, divide` that check for overflow/underflow | 2.5 | TODO |
+| 13-14 | Functions `plus, minus, multiply, divide` that check for overflow/underflow | 2.5 | Done |
 | 13-15 | Modified calculator that uses functions from 13-14 | 2 | TODO |
 
 
