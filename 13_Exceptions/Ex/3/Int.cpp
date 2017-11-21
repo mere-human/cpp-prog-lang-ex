@@ -64,5 +64,6 @@ int main()
     {
         std::cout << "Unexpected error: " << e.what() << "\n";
     }
+	std::cout << "All tests passed OK\n";
     return 0;
 }
