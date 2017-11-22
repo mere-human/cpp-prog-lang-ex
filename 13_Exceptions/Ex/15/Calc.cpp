@@ -1,6 +1,26 @@
 /*
-[11] (*2) Type in the calculator example and get it to work. Do not "save time" by using an
-already entered text. You’ll learn most from finding and correcting "little silly errors".
+[15] (*2) Modify the calculator to use the functions from ex.13-14
+*/
+
+/*
+Sample output:
+
+1/0
+Math Error: Division by zero for divide with 1, 0
+1/3
+Math Error: Inexact result, rounding was necessary for divide with 1, 3
+~
+Syntax Error: bad token
+1)
+1
+(1
+Syntax Error: ')' expected
+1+2
+3
+3/2
+Math Error: Inexact result, rounding was necessary for divide with 3, 2
+5/2
+2.5
 */
 
 #include "SafeArith.h"
@@ -14,7 +34,8 @@ using namespace std;
 
 enum class Kind : char {
 	name, number, end,
-	plus = '+', minus = '-', mul = '*', div = '/', print = ';', assign = '=', lp = '(', rp = ')'
+	plus = '+', minus = '-', mul = '*', div = '/',
+	print = ';', assign = '=', lp = '(', rp = ')'
 };
 
 struct Token {
@@ -59,15 +80,14 @@ private:
 };
 
 Token_stream ts{ cin }; // use input from cin
-int no_of_errors;
 map<string, double> table;
 
-double error(const string& s)
+class SyntaxError : public std::exception
 {
-	no_of_errors++;
-	cerr << "error: " << s << "\n";
-	return 1;
-}
+public:
+	SyntaxError(const char* msg) : std::exception{ msg }
+	{}
+};
 
 Token Token_stream::get()
 {
@@ -103,8 +123,7 @@ Token Token_stream::get()
 			ct.kind = Kind::name;
 			return ct;
 		}
-		error("bad token");
-		return ct = { Kind::print };
+		throw SyntaxError{ "bad token" };
 	}
 }
 
@@ -131,12 +150,12 @@ double prim(bool get)
 	case Kind::lp:
 	{
 		auto e = expr(true);
-		if (ts.current().kind != Kind::rp) return error("')' expected");
+		if (ts.current().kind != Kind::rp) throw SyntaxError{ "')' expected" };
 		ts.get(); // eat ')'
 		return e;
 	}
 	default:
-		return error("primary expected");
+		throw SyntaxError{ "primary expected" };
 	}
 }
 
@@ -175,10 +194,10 @@ double expr(bool get)
 	return left;
 }
 
-void process()
+int process()
 {
-	for (;;)
-	{
+	int no_of_errors = 0;
+	for (;;) {
 		try
 		{
 			ts.get();
@@ -186,11 +205,18 @@ void process()
 			if (ts.current().kind == Kind::print) continue;
 			cout << expr(false) << "\n";
 		}
+		catch (SyntaxError& e)
+		{
+			++no_of_errors;
+			std::cerr << "Syntax Error: " << e.what() << "\n";
+		}
 		catch (FloatError& e)
 		{
-			error(e.what());
+			++no_of_errors;
+			std::cerr << "Math Error: " << e.what() << "\n";
 		}
 	}
+	return no_of_errors;
 }
 
 int main(int argc, char* argv[])
@@ -202,14 +228,12 @@ int main(int argc, char* argv[])
 		ts.set_input(new istringstream{ argv[1] });
 		break;
 	default:
-		error("too many arguments");
+		std::cerr << "too many arguments\n";
 		return 1;
 	}
 
 	table["pi"] = 3.141592; // insert predefined names
 	table["e"] = 2.711828;
 
-	process();
-
-	return no_of_errors;
+	return process();
 }
