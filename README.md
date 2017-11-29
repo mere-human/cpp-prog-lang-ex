@@ -68,7 +68,7 @@ Numbers corresponds to chapter numbers from book.
 | 13-15 | Modified calculator that uses functions from 13-14 | 2 | Done |
 | **14** | **Namespaces** | | |
 | 14-1 | Modify program that uses library w/o namespace to use namespace for it | 2 | TODO |
-| 14-2 | Modify calculator to use namespaces | 2.5 | TODO |
+| 14-2 | Modify calculator to use namespaces | 2.5 | Done |
 
 
 ## TODO
