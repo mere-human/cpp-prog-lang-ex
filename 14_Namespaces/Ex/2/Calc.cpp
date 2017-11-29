@@ -137,73 +137,81 @@ namespace Parser {
 
 } // namespace Parser
 
-double Parser::prim(bool get)
-{
-	if (get) Lexer::ts.get();
-	switch (Lexer::ts.current().kind) {
-	case Lexer::Kind::number: // floating-point constant
-	{
-		double v = Lexer::ts.current().number_value;
-		Lexer::ts.get();
-		return v;
-	}
-	case Lexer::Kind::name:
-	{
-		double& v = Table::table[Lexer::ts.current().string_value]; // find the corresponding
-		if (Lexer::ts.get().kind == Lexer::Kind::assign) v = expr(true); // '=' seen: assignment
-		return v;
-	}
-	case Lexer::Kind::minus:
-		return -prim(true);
-	case Lexer::Kind::lp:
-	{
-		auto e = expr(true);
-		if (Lexer::ts.current().kind != Lexer::Kind::rp) throw Error::SyntaxError{ "')' expected" };
-		Lexer::ts.get(); // eat ')'
-		return e;
-	}
-	default:
-		throw Error::SyntaxError{ "primary expected" };
-	}
-}
+namespace Parser {
 
-double Parser::term(bool get)
-{
-	double left = prim(get);
-	for (;;) {
-		switch (Lexer::ts.current().kind) {
-		case Lexer::Kind::mul:
-			left *= prim(true);
-			break;
-		case Lexer::Kind::div:
-			if (auto d = prim(true)) {
-				left /= d;
+	using Lexer::ts;
+	using Lexer::Kind;
+	using Error::SyntaxError;
+
+	double prim(bool get)
+	{
+		if (get) ts.get();
+		switch (ts.current().kind) {
+		case Kind::number: // floating-point constant
+		{
+			double v = ts.current().number_value;
+			ts.get();
+			return v;
+		}
+		case Kind::name:
+		{
+			double& v = Table::table[ts.current().string_value]; // find the corresponding
+			if (ts.get().kind == Kind::assign) v = expr(true); // '=' seen: assignment
+			return v;
+		}
+		case Kind::minus:
+			return -prim(true);
+		case Kind::lp:
+		{
+			auto e = expr(true);
+			if (ts.current().kind != Kind::rp) throw SyntaxError{ "')' expected" };
+			ts.get(); // eat ')'
+			return e;
+		}
+		default:
+			throw SyntaxError{ "primary expected" };
+		}
+	}
+
+	double term(bool get)
+	{
+		double left = prim(get);
+		for (;;) {
+			switch (ts.current().kind) {
+			case Kind::mul:
+				left *= prim(true);
 				break;
+			case Kind::div:
+				if (auto d = prim(true)) {
+					left /= d;
+					break;
+				}
+				throw SyntaxError{ "divide by 0" };
+			default:
+				return left;
 			}
-			throw Error::SyntaxError{ "divide by 0" };
-		default:
-			return left;
 		}
 	}
-}
 
-double Parser::expr(bool get)
-{
-	double left = term(get);
-	for (;;) { // forever
-		switch (Lexer::ts.current().kind) {
-		case Lexer::Kind::plus:
-			left += term(true);
-			break;
-		case Lexer::Kind::minus:
-			left -= term(true);
-			break;
-		default:
-			return left;
+	double expr(bool get)
+	{
+		double left = term(get);
+		for (;;) { // forever
+			switch (ts.current().kind) {
+			case Kind::plus:
+				left += term(true);
+				break;
+			case Kind::minus:
+				left -= term(true);
+				break;
+			default:
+				return left;
+			}
 		}
+		return left;
 	}
-	return left;
-}
+
+} // namespace Parser
 
 namespace Driver {
 
