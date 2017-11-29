@@ -23,8 +23,6 @@ Error: ')' expected
 #include <map>      // map
 #include <cctype>   // isalpha(), etc
 
-using namespace std;
-
 namespace Error {
 	class SyntaxError : public std::exception
 	{
@@ -44,9 +42,11 @@ namespace Lexer {
 
 	struct Token {
 		Kind kind;
-		string string_value;
+		std::string string_value;
 		double number_value;
 	};
+
+	using std::istream;
 
 	class Token_stream {
 	public:
@@ -83,7 +83,7 @@ namespace Lexer {
 		Token ct{ Kind::end };  // current token
 	};
 
-	Token_stream ts{ cin }; // use input from cin
+	Token_stream ts{ std::cin }; // use input from cin
 
 } // namespace Lexer
 
@@ -126,7 +126,7 @@ Lexer::Token Lexer::Token_stream::get()
 }
 
 namespace Table {
-	map<string, double> table;
+	std::map<std::string, double> table;
 } // namespace Table
 
 namespace Parser { // user interface
@@ -228,7 +228,7 @@ namespace Driver {
 				Lexer::ts.get();
 				if (Lexer::ts.current().kind == Lexer::Kind::end) break;
 				if (Lexer::ts.current().kind == Lexer::Kind::print) continue;
-				cout << Parser::expr(false) << "\n";
+				std::cout << Parser::expr(false) << "\n";
 			}
 			catch (Error::SyntaxError& e)
 			{
@@ -246,7 +246,7 @@ int main(int argc, char* argv[])
 	case 1: // read from standard input
 		break;
 	case 2:
-		Lexer::ts.set_input(new istringstream{ argv[1] });
+		Lexer::ts.set_input(new std::istringstream{ argv[1] });
 		break;
 	default:
 		std::cerr << "too many arguments\n";
