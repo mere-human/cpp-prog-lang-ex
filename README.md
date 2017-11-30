@@ -73,6 +73,5 @@ Numbers corresponds to chapter numbers from book.
 
 ## TODO
 1. Add each file and directory
-1. Cleanup spaces and replace tabs
 1. Cleanup each file and it's description
 1. Integrate with CMake or similar (optional)
