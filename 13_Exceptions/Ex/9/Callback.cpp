@@ -9,58 +9,58 @@ template<typename F>
 class Callback
 {
 public:
-	Callback(F f) : call{ f }
-	{}
+  Callback(F f) : call{ f }
+  {}
 
-	// simple version w/o args
-	void operator()()
-	{
-		call();
-	}
+  // simple version w/o args
+  void operator()()
+  {
+    call();
+  }
 
-	// more complex version with variadic template
-	// actually, can be called even w/o args
-	template<typename... Args>
-	void operator()(Args... args)
-	{
-		call(args...);
-	}
+  // more complex version with variadic template
+  // actually, can be called even w/o args
+  template<typename... Args>
+  void operator()(Args... args)
+  {
+    call(args...);
+  }
 private:
-	F call;
+  F call;
 };
 
 template<typename F>
 Callback<F> callback(F f)
 {
-	return Callback<F>(f);
+  return Callback<F>(f);
 }
 
 void f()
 {
-	std::cout << "f()\n";
+  std::cout << "f()\n";
 }
 
 void g(int n)
 {
-	std::cout << "g(" << n << ")\n";
+  std::cout << "g(" << n << ")\n";
 }
 
 int main()
 {
-	// function w/o args
-	auto cb1 = callback(&f);
-	cb1();
+  // function w/o args
+  auto cb1 = callback(&f);
+  cb1();
 
-	// function with arg
-	auto cb2 = callback(&g);
-	cb2(3);
+  // function with arg
+  auto cb2 = callback(&g);
+  cb2(3);
 
-	std::vector<int> v(2, 1);
-	std::cout << "size: " << v.size() << "\n";
-	// lambda function
-	auto cb3 = callback([&v]() { return v.pop_back(); });
-	cb3();
-	std::cout << "size: " << v.size() << "\n";
+  std::vector<int> v(2, 1);
+  std::cout << "size: " << v.size() << "\n";
+  // lambda function
+  auto cb3 = callback([&v]() { return v.pop_back(); });
+  cb3();
+  std::cout << "size: " << v.size() << "\n";
 
-	return 0;
+  return 0;
 }

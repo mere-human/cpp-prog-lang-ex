@@ -8,37 +8,37 @@ it. That is, after rev(p) the last character of p will be the first, etc.
 
 void rev(char* p)
 {
-	auto len = std::strlen(p);
-	char* e = p + len - 1;
-	int n = len / 2;
-	while (n--)
-	{
-		auto tmp = *e;
-		*e-- = *p;
-		*p++ = tmp;
-	}
+  auto len = std::strlen(p);
+  char* e = p + len - 1;
+  int n = len / 2;
+  while (n--)
+  {
+    auto tmp = *e;
+    *e-- = *p;
+    *p++ = tmp;
+  }
 }
 
 int main()
 {
-	{
-		char p[] = "a";
-		rev(p);
-		assert(strcmp(p, "a") == 0);
-	}
-	{
-		char p[] = "ab";
-		rev(p);
-		assert(strcmp(p, "ba") == 0);
-	}
-	{
-		char p[] = "abc";
-		rev(p);
-		assert(strcmp(p, "cba") == 0);
-	}
-	{
-		char p[] = "abcd";
-		rev(p);
-		assert(strcmp(p, "dcba") == 0);
-	}
+  {
+    char p[] = "a";
+    rev(p);
+    assert(strcmp(p, "a") == 0);
+  }
+  {
+    char p[] = "ab";
+    rev(p);
+    assert(strcmp(p, "ba") == 0);
+  }
+  {
+    char p[] = "abc";
+    rev(p);
+    assert(strcmp(p, "cba") == 0);
+  }
+  {
+    char p[] = "abcd";
+    rev(p);
+    assert(strcmp(p, "dcba") == 0);
+  }
 }

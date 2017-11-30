@@ -9,12 +9,12 @@ notation.
 
 int main()
 {
-	for (unsigned char c = 0; c != 255; ++c)
-	{
-		if (std::isprint(c))
-		{
-			std::cout << c << " " << std::dec << static_cast<int>(c) << " "
-				<< std::hex << static_cast<int>(c) << "\n";
-		}
-	}
+  for (unsigned char c = 0; c != 255; ++c)
+  {
+    if (std::isprint(c))
+    {
+      std::cout << c << " " << std::dec << static_cast<int>(c) << " "
+        << std::hex << static_cast<int>(c) << "\n";
+    }
+  }
 }

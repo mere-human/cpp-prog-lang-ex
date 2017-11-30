@@ -17,34 +17,34 @@ text with the same key produces the original text. If no key (or a null string) 
 
 int main(int argc, char** argv)
 {
-	std::string key;
-	std::string input_file, output_file;
-	if (argc == 4)
-	{
-		key = argv[1];
-		input_file = argv[2];
-		output_file = argv[3];
-	}
-	else
-	{
-		std::cerr << "Error: wrong amount of arguments\n";
-		return 1;
-	}
+  std::string key;
+  std::string input_file, output_file;
+  if (argc == 4)
+  {
+    key = argv[1];
+    input_file = argv[2];
+    output_file = argv[3];
+  }
+  else
+  {
+    std::cerr << "Error: wrong amount of arguments\n";
+    return 1;
+  }
 
-	// Streams should use binary mode because encoding produce non-printable characters
-	// which can cause troubles while reading.
-	std::ifstream input_stream(input_file, std::ios::binary);
-	std::ofstream output_stream(output_file, std::ios::binary);
+  // Streams should use binary mode because encoding produce non-printable characters
+  // which can cause troubles while reading.
+  std::ifstream input_stream(input_file, std::ios::binary);
+  std::ofstream output_stream(output_file, std::ios::binary);
 
-	int i = 0;
-	char c;
-	while (input_stream.get(c))
-	{
-		c = key[i++] ^ c;
-		if (i == key.length())
-			i = 0;
-		output_stream.put(c);
-	}
+  int i = 0;
+  char c;
+  while (input_stream.get(c))
+  {
+    c = key[i++] ^ c;
+    if (i == key.length())
+      i = 0;
+    output_stream.put(c);
+  }
 
-	return 0;
+  return 0;
 }

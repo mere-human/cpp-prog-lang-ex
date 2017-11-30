@@ -8,7 +8,7 @@ return value. Hint: Use a type alias (using).
 
 void f1(char* p, int& n)
 {
-	std::cout << __FUNCTION__ << " " << p[n] << "\n";
+  std::cout << __FUNCTION__ << " " << p[n] << "\n";
 }
 
 using pf1 = void(*)(char*, int&);
@@ -19,19 +19,19 @@ void f2(pf1 f)
 
 pf1 f3()
 {
-	return f1;
+  return f1;
 }
 
 pf1 f4(pf1 f)
 {
-	return f;
+  return f;
 }
 
 int main()
 {
-	char p[] = "abcd";
-	int n = 1;
-	f4(&f1)(p, n);
+  char p[] = "abcd";
+  int n = 1;
+  f4(&f1)(p, n);
 
-	return 0;
+  return 0;
 }

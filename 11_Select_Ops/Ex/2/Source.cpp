@@ -15,21 +15,21 @@ Do this twice: once not writing to the allocated memory and once writing to each
 
 int main()
 {
-	int block_size = 1024;
-	int n = 0;
-	try
-	{
-		while (true)
-		{
-			char* p = new char[block_size];
-			//// write to the memory
-			//for (int i = 0; i != block_size; ++i)
-			//	p[i] = 'a' + i;
-			n++;
-		}
-	}
-	catch (std::bad_alloc&)
-	{
-		std::cout << "Mem: " << n << " KB\n";
-	}
+  int block_size = 1024;
+  int n = 0;
+  try
+  {
+    while (true)
+    {
+      char* p = new char[block_size];
+      //// write to the memory
+      //for (int i = 0; i != block_size; ++i)
+      //  p[i] = 'a' + i;
+      n++;
+    }
+  }
+  catch (std::bad_alloc&)
+  {
+    std::cout << "Mem: " << n << " KB\n";
+  }
 }

@@ -8,46 +8,46 @@ Which calls are legal? Which calls cause the compiler to introduce a temporary v
 
 void f(char)
 {
-	std::cout << "f(char)\n";
+  std::cout << "f(char)\n";
 }
 
 void g(char&)
 {
-	std::cout << "g(char&)\n";
+  std::cout << "g(char&)\n";
 }
 
 void h(const char&)
 {
-	std::cout << "h(const char&)\n";
+  std::cout << "h(const char&)\n";
 }
 
 int main()
 {
-	f('a');
-	//g('a'); // error
-	h('a');
+  f('a');
+  //g('a'); // error
+  h('a');
 
-	f(49);
-	//g(49); // error
-	h(49);
+  f(49);
+  //g(49); // error
+  h(49);
 
-	f(3300);
-	//g(3300); // error
-	h(3300);
+  f(3300);
+  //g(3300); // error
+  h(3300);
 
-	char c = 'r';
-	unsigned char uc = 'g';
-	signed char sc = 'b';
+  char c = 'r';
+  unsigned char uc = 'g';
+  signed char sc = 'b';
 
-	f(c);
-	g(c);
-	h(c);
+  f(c);
+  g(c);
+  h(c);
 
-	f(uc);
-	//g(uc); // error
-	h(uc);
+  f(uc);
+  //g(uc); // error
+  h(uc);
 
-	f(sc);
-	//g(sc); // error
-	h(sc);
+  f(sc);
+  //g(sc); // error
+  h(sc);
 }

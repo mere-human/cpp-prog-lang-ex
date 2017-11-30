@@ -9,13 +9,13 @@
 class FloatError : std::exception
 {
 public:
-	FloatError(std::fexcept_t code, const char* op, double arg1, double arg2);
-	const char* what() const override;
-	~FloatError() override;
+  FloatError(std::fexcept_t code, const char* op, double arg1, double arg2);
+  const char* what() const override;
+  ~FloatError() override;
 private:
-	void set_message(const char* op, double arg1, double arg2);
-	std::string _msg;
-	std::fexcept_t _code;
+  void set_message(const char* op, double arg1, double arg2);
+  std::string _msg;
+  std::fexcept_t _code;
 };
 
 double add(double a, double b);

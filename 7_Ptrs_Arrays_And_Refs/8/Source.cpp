@@ -9,7 +9,7 @@ What is the length of the string "a short string"?
 
 int main()
 {
-	char str[] = "a short string";
-	std::cout << "size: " << sizeof(str) / sizeof(*str)
-		<< "\nlen: " << std::strlen(str) << "\n";
+  char str[] = "a short string";
+  std::cout << "size: " << sizeof(str) / sizeof(*str)
+    << "\nlen: " << std::strlen(str) << "\n";
 }

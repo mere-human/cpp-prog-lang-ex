@@ -10,11 +10,11 @@ using riffi = int(&) (int, int);
 
 int add(int a, int b)
 {
-	return a + b;
+  return a + b;
 }
 
 int main()
 {
-	riffi f = add;
-	std::cout << f(1, 2);
+  riffi f = add;
+  std::cout << f(1, 2);
 }

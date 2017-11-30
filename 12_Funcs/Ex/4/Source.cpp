@@ -14,11 +14,11 @@ you might call it cat
 
 int main(int argc, char** argv)
 {
-	for (int i = 1; i != argc; ++i)
-	{
-		std::string buf;
-		std::ifstream file(argv[i]);
-		while (std::getline(file, buf))
-			std::cout << buf << "\n";
-	}
+  for (int i = 1; i != argc; ++i)
+  {
+    std::string buf;
+    std::ifstream file(argv[i]);
+    while (std::getline(file, buf))
+      std::cout << buf << "\n";
+  }
 }

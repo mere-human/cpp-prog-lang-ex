@@ -8,11 +8,11 @@ and to say hello to each.
 
 int main(int argc, char** argv)
 {
-	std::cout << "Hello";
-	for (int i = 1; i < argc; ++i) // skip prog name
-	{
-		std::cout << ", " << argv[i];
-	}
-	std::cout << "!";
-	return 0;
+  std::cout << "Hello";
+  for (int i = 1; i < argc; ++i) // skip prog name
+  {
+    std::cout << ", " << argv[i];
+  }
+  std::cout << "!";
+  return 0;
 }

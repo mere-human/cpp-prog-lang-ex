@@ -8,36 +8,36 @@ the struct.
 
 int main()
 {
-	struct S1
-	{
-		bool b;
-		char c;
-		int i;
-		long l;
-		double d;
-		long double ld;
-	};
-	std::cout << "S1: " << sizeof(S1) << "\n";
+  struct S1
+  {
+    bool b;
+    char c;
+    int i;
+    long l;
+    double d;
+    long double ld;
+  };
+  std::cout << "S1: " << sizeof(S1) << "\n";
 
-	struct S2
-	{
-		long double ld;
-		double d;
-		long l;
-		int i;
-		char c;
-		bool b;
-	};
-	std::cout << "S2: " << sizeof(S2) << "\n";
+  struct S2
+  {
+    long double ld;
+    double d;
+    long l;
+    int i;
+    char c;
+    bool b;
+  };
+  std::cout << "S2: " << sizeof(S2) << "\n";
 
-	struct S3
-	{
-		long double ld;
-		double d;
-		long l;
-		char c;
-		bool b;
-		int i;
-	};
-	std::cout << "S3: " << sizeof(S3) << "\n";
+  struct S3
+  {
+    long double ld;
+    double d;
+    long l;
+    char c;
+    bool b;
+    int i;
+  };
+  std::cout << "S3: " << sizeof(S3) << "\n";
 }

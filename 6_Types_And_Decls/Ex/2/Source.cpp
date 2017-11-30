@@ -3,5 +3,5 @@
 
 int main()
 {
-	std::cout << (std::is_signed<char>::value ? "signed\n" : "unsigned\n");
+  std::cout << (std::is_signed<char>::value ? "signed\n" : "unsigned\n");
 }
