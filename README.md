@@ -69,6 +69,12 @@ Numbers corresponds to chapter numbers from book.
 | **14** | **Namespaces** | | |
 | 14-1 | Modify program that uses library w/o namespace to use namespace for it | 2 | TODO |
 | 14-2 | Modify calculator to use namespaces | 2.5 | Done |
+| **15** | **Files** | | |
+| 15-1 | Find where the standard library headers and nonstandard ones are kept on your system | 2 | TODO |
+| 15-3 | Read source file and write out the names of included files | 2.5 | TODO |
+| 15-4 | Modify the program from 15-3 to print number of lines (comment, non-comment, whitespace) | 3 | TODO |
+| 15-7 | Read and compare performance of reading files | 3 | TODO |
+| 15-8 | Modify the calculator so that it can be invoked as a simple function call | 2 | TODO |
 
 
 ## TODO
