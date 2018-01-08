@@ -66,6 +66,11 @@ Token read_token(std::istream& is, std::string& str)
   return Token::word;
 }
 
+bool is_comment(Token t)
+{
+  return (t == Token::comment_begin) || (t == Token::multicomment_begin);
+}
+
 const char* to_string(Token t)
 {
   switch (t)
@@ -87,14 +92,43 @@ const char* to_string(Token t)
   }
 }
 
-std::vector<std::string> collect_includes(const std::string& file_name)
+struct FileStats
+{
+  std::vector<std::string> includes;
+  int comm_lines = 0;
+  int empty_lines = 0;
+  int code_lines = 0;
+  int code_words = 0;
+
+  int total_lines() const
+  {
+    return comm_lines + empty_lines + code_lines;
+  }
+
+  void print(std::ostream& os, const std::string& indent, bool summary) const
+  {
+    if (!summary)
+    {
+      os << indent << "code lines: " << code_lines << "\n";
+      os << indent << "comment lines : " << comm_lines << "\n";
+      os << indent << "empty lines: " << empty_lines << "\n";
+      os << indent << "total lines: " << total_lines() << "\n";
+    }
+    os << indent << "code words: " << code_words << "\n";
+    os << indent << "includes: " << includes.size() << "\n";
+  }
+};
+
+FileStats collect_stats(const std::string& file_name)
 {
   std::ifstream is(file_name);
   if (!is)
     return{};
 
+  FileStats stats;
   std::vector<std::string> files;
   bool include = false;
+  bool empty_line = true;
   Token state = Token::end;
   while (true)
   {
@@ -121,13 +155,24 @@ std::vector<std::string> collect_includes(const std::string& file_name)
     }
     else if (t == Token::newline)
     {
+      if (empty_line)
+        ++stats.empty_lines;
+      else if (is_comment(state))
+        ++stats.comm_lines;
+      else
+        ++stats.code_lines;
       if (state == Token::comment_begin)
         state = Token::end;
+      empty_line = true;
     }
     else if (t == Token::hash)
     {
-      if ((state != Token::comment_begin) && (state != Token::multicomment_begin))
+      empty_line = false;
+      if (!is_comment(state))
+      {
         state = Token::hash;
+        ++stats.code_words;
+      }
     }
     else if (t == Token::multicomment_end)
     {
@@ -136,9 +181,10 @@ std::vector<std::string> collect_includes(const std::string& file_name)
     }
     else if (t == Token::word)
     {
+      empty_line = false;
       if (include)
       {
-        files.push_back(str);
+        stats.includes.push_back(str);
         include = false;
       }
       else
@@ -146,9 +192,13 @@ std::vector<std::string> collect_includes(const std::string& file_name)
         if ((state == Token::hash) && (str == "include"))
           include = true;
       }
+      if (!is_comment(state))
+      {
+        ++stats.code_words;
+      }
     }
   }
-  return files;
+  return stats;
 }
 
 using string_set = std::unordered_set<std::string>;
@@ -158,13 +208,15 @@ void process_file(const std::string& file_name, string_set& visited_files,
 {
   const char std_include_path[] = "e:\\Software\\Microsoft Visual Studio 14.0\\VC\\include\\";
 
-  auto includes = collect_includes(file_name);
-  for (const auto& include : includes)
+  auto file_stats = collect_stats(file_name);
+  file_stats.print(std::cout, indent, !indent.empty());
+
+  for (const auto& include : file_stats.includes)
   {
-    std::cout << indent << include << "\n";
     if (visited_files.insert(include).second)
     {
       auto file = include.substr(1, include.length() - 2); // strip <...> or "..."
+      std::cout << indent << "  file: " << file << "\n";
       process_file((include[0] == '<') ? (std_include_path + file) : file,
                    visited_files, indent + "  ");
     }
@@ -180,7 +232,9 @@ int main(int argc, char** argv)
   }
 
   string_set visited_files;
-  process_file(argv[1], visited_files);
+  std::string file_name = argv[1];
+  std::cout << "file: " << file_name << "\n";
+  process_file(file_name, visited_files);
 
   return 0;
 }
