@@ -76,7 +76,7 @@ Numbers corresponds to chapter numbers from book.
 | 15-7 | Read and compare performance of reading files | 3 | TODO |
 | 15-8 | Modify the calculator so that it can be invoked as a simple function call | 2 | TODO |
 | **16** | **Classes** | | |
-| 16-1 | Find the error in `Date::add_year()` | 1 | TODO |
+| 16-1 | Find the error in `Date::add_year()` | 1 | Done |
 | 16-2 | Complete and test Date. Reimplement it with "number of days after..." representation | 2.5 | TODO |
 | 16-7 | Define, implement and test a set of integers, class `Intset` | 3 | TODO |
 | 16-8 | Modify class `Intset` into a set of nodes | 1.5 | TODO |
