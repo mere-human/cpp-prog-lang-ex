@@ -75,9 +75,18 @@ Numbers corresponds to chapter numbers from book.
 | 15-4 | Modify the program from 15-3 to print number of lines (comment, non-comment, whitespace) | 3 | Done |
 | 15-7 | Read and compare performance of reading files | 3 | TODO |
 | 15-8 | Modify the calculator so that it can be invoked as a simple function call | 2 | TODO |
+| **16** | **Classes** | | |
+| 16-1 | Find the error in `Date::add_year()` | 1 | TODO |
+| 16-2 | Complete and test Date. Reimplement it with "number of days after..." representation | 2.5 | TODO |
+| 16-7 | Define, implement and test a set of integers, class `Intset` | 3 | TODO |
+| 16-8 | Modify class `Intset` into a set of nodes | 1.5 | TODO |
+| 16-9 | Define a class for analyzing simple arithmetic expressions | 1.5 | TODO |
+| 16-13 | Modify "Hello, world!" example to print strings befoore and after `main()` | 1 | TODO |
+| 16-16 | Write a function that produces a map holding each string and the number of lines | 3 | TODO |
 
 
 ## TODO
 1. Add each file and directory
 1. Cleanup each file and it's description
 1. Integrate with CMake or similar (optional)
+1. Read the result of 15-1 by the 15-3
