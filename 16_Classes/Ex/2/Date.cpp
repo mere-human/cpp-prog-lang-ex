@@ -38,6 +38,7 @@ namespace Chrono
 
   bool is_date(int d, int m, int y);
   bool is_leapyear(int y);
+  int max_days(Month m, int y);
 
   const Date& default_date();
 
@@ -75,8 +76,24 @@ inline int Chrono::Date::year() const
 
 Chrono::Date& Chrono::Date::add_day(int n)
 {
-  // TODO: provide proper implementation
-  d += n;
+  int dd = d + n;
+  int mm = static_cast<int>(m);
+  int yy = y;
+  int ndays = max_days(m, y);
+  while (dd > ndays)
+  {
+    if (mm == 12)
+    {
+      mm = 0;
+      ++yy;
+    }
+    ++mm;
+    dd -= ndays;
+    ndays = max_days(static_cast<Month>(mm), yy);
+  }
+  d = dd;
+  m = static_cast<Month>(mm);
+  y = yy;
   return *this;
 }
 
@@ -94,11 +111,21 @@ Chrono::Date& Chrono::Date::add_month(int n)
       ++delta_y;
       mm -= 12;
     }
-    // TODO: handle cases when the month mm does not have a day d
     y += delta_y;
     m = static_cast<Month>(mm);
+    int ndays = max_days(m, y);
+    if (d > ndays)
+    {
+      int delta_d = d - ndays;
+      d = ndays;
+      add_day(delta_d);
+    }
   }
-  // TODO: handle negative n
+  else
+  {
+    // TODO: handle negative n
+    assert(!"add_month for negative is not supported");
+  }
   return *this;
 }
 
@@ -131,22 +158,7 @@ bool Chrono::is_date(int d, int m, int y)
 {
   if (m < 1 || m > 12)
     return false;
-
-  int ndays;
-  switch (static_cast<Month>(m))
-  {
-  case Month::feb:
-    ndays = 28 + is_leapyear(y);
-    break;
-  case Month::jan: case Month::mar: case Month::may: case Month::jul:
-  case Month::oct: case Month::aug: case Month::nov:
-    ndays = 31;
-    break;
-  default:
-    ndays = 30;
-    break;
-  }
-  return 1 <= d && d <= ndays;
+  return 1 <= d && d <= max_days(static_cast<Month>(m), y);
 }
 
 bool Chrono::is_leapyear(int y)
@@ -155,6 +167,22 @@ bool Chrono::is_leapyear(int y)
   else if (y % 100 != 0) return true;
   else if (y % 400 != 0) return false;
   return true;
+}
+
+int Chrono::max_days(Month m, int y)
+{
+  switch (m)
+  {
+  case Month::feb:
+    return 28 + is_leapyear(y);
+  case Month::jan: case Month::mar: case Month::may: case Month::jul:
+  case Month::aug: case Month::oct: case Month::nov:
+    return 31;
+  case Month::apr: case Month::jun: case Month::sep: case Month::dec:
+    return 30;
+  default:
+    return -1;
+  }
 }
 
 const Chrono::Date& Chrono::default_date()
@@ -196,6 +224,7 @@ int main()
   d.add_day(30).add_month(1).add_year(2);
   if (d != Chrono::default_date())
     std::cout << "new date: " << d << "\n";
+  std::cout << "leap: " << Chrono::is_leapyear(d.year()) << "\n";
   try
   {
     Chrono::Date d2{ 30, Chrono::Month::feb, 1990 };
