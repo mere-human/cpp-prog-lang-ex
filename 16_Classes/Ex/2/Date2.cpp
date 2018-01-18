@@ -3,6 +3,8 @@
 Reimplement it with "number of days after 1/1/1970" representation.
 */
 
+// NOTE: implementation is incomplete and may contain hidden issues
+
 #include <iostream>
 
 namespace Chrono
@@ -32,8 +34,9 @@ namespace Chrono
 
   private:
     bool is_valid();
-    int d, y;
-    Month m;
+    void to_dmy(int& d, int& m, int& y) const;
+
+    int nd = 0;
   };
 
   bool is_date(int d, int m, int y);
@@ -50,108 +53,135 @@ namespace Chrono
 }
 
 Chrono::Date::Date(int dd, Month mm, int yy)
-  : d{ dd }, m{ mm }, y{ yy }
 {
-  if (d == 0) d = default_date().day();
-  if (m == Month{}) m = default_date().month();
-  if (y == 0) y = default_date().year();
-
-  if (!is_valid()) throw Bad_date{};
+  if ((dd != 0) && (mm != Month{}) && (yy != 0))
+    if (!is_date(dd, static_cast<int>(mm), yy))
+      throw Bad_date{};
+  // year
+  if (yy > 1970)
+  {
+    int nleaps = 0;
+    int first_leap = 1972;
+    if (yy > first_leap)
+    {
+      int last_leap = yy;
+      while (!is_leapyear(last_leap))
+        --last_leap;
+      nleaps = (last_leap - first_leap) / 4;
+    }
+    nd = nleaps * 366 + (yy - 1970 - nleaps) * 365;
+  }
+  else
+  {
+    // TODO
+  }
+  // month
+  if (mm != Month{})
+  {
+    auto m = Month::jan;
+    while (m != mm)
+    {
+      nd += max_days(m, yy);
+      m = static_cast<Month>(static_cast<int>(m) + 1);
+    }
+  }
+  // day
+  nd += dd;
 }
 
 inline int Chrono::Date::day() const
 {
+  int d, m, y;
+  to_dmy(d, m, y);
   return d;
 }
 
 inline Chrono::Month Chrono::Date::month() const
 {
-  return m;
+  int d, m, y;
+  to_dmy(d, m, y);
+  return static_cast<Month>(m);
 }
 
 inline int Chrono::Date::year() const
 {
+  int d, m, y;
+  to_dmy(d, m, y);
   return y;
 }
 
 Chrono::Date& Chrono::Date::add_day(int n)
 {
-  int dd = d + n;
-  int mm = static_cast<int>(m);
-  int yy = y;
-  int ndays = max_days(m, y);
-  while (dd > ndays)
-  {
-    if (mm == 12)
-    {
-      mm = 0;
-      ++yy;
-    }
-    ++mm;
-    dd -= ndays;
-    ndays = max_days(static_cast<Month>(mm), yy);
-  }
-  d = dd;
-  m = static_cast<Month>(mm);
-  y = yy;
+  nd += n;
   return *this;
 }
 
 Chrono::Date& Chrono::Date::add_month(int n)
 {
-  if (n == 0)
-    return *this;
-
   if (n > 0)
   {
-    int delta_y = n / 12; // number of full years
-    int mm = static_cast<int>(m) + n % 12; // number of months ahead
-    if (mm > 12) // note: dec is represented as 12
-    {
-      ++delta_y;
-      mm -= 12;
-    }
-    y += delta_y;
-    m = static_cast<Month>(mm);
-    int ndays = max_days(m, y);
-    if (d > ndays)
-    {
-      int delta_d = d - ndays;
-      d = ndays;
-      add_day(delta_d);
-    }
+    int d, m, y;
+    to_dmy(d, m, y);
+    int delta_y = n / 12;
+    int nm = n % 12;
+    while (nm--)
+      nd += max_days(static_cast<Month>(m++), y);
+    while (delta_y > 0)
+      nd += 365 + is_leapyear(y + delta_y);
   }
   else
   {
-    // TODO: handle negative n
-    assert(!"add_month for negative is not supported");
+    // TODO:
   }
   return *this;
 }
 
 Chrono::Date& Chrono::Date::add_year(int n)
 {
-  int yy = y + n;
-  if (d == 29 && m == Month::feb && !is_leapyear(yy))
+  if (n > 0)
   {
-    d = 1;
-    m = Month::mar;
+    int d, m, y;
+    to_dmy(d, m, y);
+    while (n > 0)
+      nd += 365 + is_leapyear(y + n--);
   }
-  if (yy == 0)
+  else
   {
-    // AD 1 immediately follows the year 1 BC
-    if (yy > y)
-      yy = 1;
-    else
-      yy = -1;
+    // TODO:
   }
-  y = yy;
   return *this;
 }
 
 bool Chrono::Date::is_valid()
 {
-  return is_date(d, static_cast<int>(m), y);
+  int d, m, y;
+  to_dmy(d, m, y);
+  return is_date(d, m, y);
+}
+
+void Chrono::Date::to_dmy(int& d, int& m, int& y) const
+{
+  if (nd >= 0)
+  {
+    y = 1970;
+    d = nd;
+    int max_yd = 365 + is_leapyear(y);
+    while (d > max_yd)
+    {
+      d -= max_yd;
+      max_yd = 365 + is_leapyear(++y);
+    }
+    m = 1;
+    int max_md = max_days(static_cast<Month>(m), y);
+    while (d > max_md)
+    {
+      d -= max_md;
+      ++m;
+      max_md = max_days(static_cast<Month>(m), y);
+    }
+    if (d == 0)
+      d = 1;
+  }
 }
 
 bool Chrono::is_date(int d, int m, int y)
@@ -219,6 +249,8 @@ std::istream& Chrono::operator >> (std::istream& is, Date& x)
 
 int main()
 {
+  Chrono::Date d1(2, Chrono::Month::mar, 1971);
+  std::cout << d1 << "\n";
   Chrono::Date d;
   std::cout << d << "\n";
   d.add_day(30).add_month(1).add_year(2);
