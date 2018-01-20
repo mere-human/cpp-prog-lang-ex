@@ -78,7 +78,7 @@ Numbers corresponds to chapter numbers from book.
 | **16** | **Classes** | | |
 | 16-1 | Find the error in `Date::add_year()` | 1 | Done |
 | 16-2 | Complete and test Date. Reimplement it with "number of days after..." representation | 2.5 | Done |
-| 16-7 | Define, implement and test a set of integers, class `Intset` | 3 | TODO |
+| 16-7 | Define, implement and test a set of integers, class `Intset` | 3 | Done |
 | 16-8 | Modify class `Intset` into a set of nodes | 1.5 | TODO |
 | 16-9 | Define a class for analyzing simple arithmetic expressions | 1.5 | TODO |
 | 16-13 | Modify "Hello, world!" example to print strings befoore and after `main()` | 1 | TODO |
