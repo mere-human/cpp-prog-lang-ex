@@ -5,6 +5,13 @@ Provide union, intersection, and symmetric difference operations.
 
 // Naive implementation using vectors.
 
+// Sample output:
+//a: 1 3 5
+//b : 2 3 4
+//a union b : 1 2 3 4 5
+//a intersection b : 3
+//a symm_diff b : 1 2 4 5
+
 #include <vector>
 #include <algorithm>
 #include <iostream>
