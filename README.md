@@ -84,7 +84,7 @@ Numbers corresponds to chapter numbers from book.
 | 16-13 | Modify "Hello, world!" example to print strings befoore and after `main()` | 1 | TODO |
 | 16-16 | Write a function that produces a map holding each string and the number of lines | 3 | TODO |
 | **17** | **Construction, Cleanup, Copy and Move** | | |
-| 17-1 | Implement the functions of the "canonical complete class" `X` and print their name and address | 2 | TODO |
+| 17-1 | Implement the functions of the "canonical complete class" `X` and print their name and address | 2 | Done |
 | 17-4 | `Vector` class with an initializer-list constructor and `Count` type constructor | 1 | TODO |
 | 17-5 | Simple document editor | 3 | TODO |
 | 17-6 | Simple `Matrix` based on ch.17.5.2 | 3 | TODO |
