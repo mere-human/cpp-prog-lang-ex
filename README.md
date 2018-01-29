@@ -87,7 +87,7 @@ Numbers corresponds to chapter numbers from book.
 | 17-1 | Implement the functions of the "canonical complete class" `X` and print their name and address | 2 | Done |
 | 17-4 | `Vector` class with an initializer-list constructor and `Count` type constructor | 1 | Done |
 | 17-5 | Simple document editor | 3 | TODO |
-| 17-6 | Simple `Matrix` based on ch.17.5.2 | 3 | TODO |
+| 17-6 | Simple `Matrix` based on ch.17.5.2 | 3 | In dev |
 
 ## TODO
 1. Add each file and directory
