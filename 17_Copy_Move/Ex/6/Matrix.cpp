@@ -16,20 +16,19 @@ operations, what would you do?
 // clang, duration, ms: ~25
 // clang, MATRIX_DELETE_MOVE, duration, ms: ~100
 // clang, MATRIX_DELETE_MOVE, MATRIX_USE_PLUS_EQ: ~40
-// clang, MATRIX_DELETE_MOVE, MATRIX_USE_NO_MOVE_WORKAROUND: ~25
 // MSVC, duration, ms: ~5
 // MSVC, MATRIX_DELETE_MOVE:
 // Error	C2280	'Matrix<double>::Matrix(Matrix<double> &&)': attempting to reference a deleted function
 // MSVC, MATRIX_DELETE_MOVE, MATRIX_USE_PLUS_EQ: ~5
+
+// verbose output, helps to ensure everything works okay, should be used with small dimension
+//#define VERBOSE_OUTPUT
 
 // move constructor and operator are =delete-d
 //#define MATRIX_DELETE_MOVE
 
 // use operator+= instead of operator+
 //#define MATRIX_USE_PLUS_EQ
-
-// use workaround for operator+ when move is not available
-//#define MATRIX_USE_NO_MOVE_WORKAROUND
 
 template<typename T>
 class Matrix
@@ -42,6 +41,11 @@ public:
     if (d1 != d2)
       throw std::runtime_error("only square matrices are supported for now");
     elem = new T[d1*d2];
+  }
+
+  ~Matrix()
+  {
+    delete[] elem;
   }
 
   int size() const { return rows() * cols(); }
@@ -112,15 +116,6 @@ public:
 
 private:
   int pos(int i, int j) const { return dim[0] * i + j; }
-#ifdef MATRIX_USE_NO_MOVE_WORKAROUND
-  Matrix(int d1, int d2, T* e) : dim{ d1, d2 }, elem{ e } {}
-  T* take()
-  {
-    T* tmp = elem;
-    elem = nullptr;
-    return tmp;
-  }
-#endif
 };
 
 template<typename T>
@@ -133,11 +128,7 @@ Matrix<T> operator+(const Matrix<T>& a, const Matrix<T>& b)
   const auto n = a.size();
   for (int i = 0; i != n; ++i)
     res.elem[i] = a.elem[i] + b.elem[i];
-#ifdef MATRIX_USE_NO_MOVE_WORKAROUND
-  return{ a.dim[0], a.dim[1], res.take() };
-#else
   return res; // move
-#endif
 }
 
 void fill(Matrix<double>& mm)
@@ -166,13 +157,17 @@ int main()
 
   Matrix<double> m1(dim, dim);
   fill(m1);
-  //std::cout << "M1:\n";
-  //print(m1);
+#ifdef VERBOSE_OUTPUT
+  std::cout << "M1:\n";
+  print(m1);
+#endif
 
   Matrix<double> m2(dim, dim);
   fill(m2);
-  //std::cout << "M2:\n";
-  //print(m2);
+#ifdef VERBOSE_OUTPUT
+  std::cout << "M2:\n";
+  print(m2);
+#endif
 
   using hrc = std::chrono::high_resolution_clock;
   using ms = std::chrono::milliseconds;
@@ -185,8 +180,10 @@ int main()
   Matrix<double> m3(m1 + m2);
 #endif
   auto t1 = hrc::now();
-  //std::cout << "M3:\n";
-  //print(m3);
+#ifdef VERBOSE_OUTPUT
+  std::cout << "M3:\n";
+  print(m3);
+#endif
   std::cout << "duration, ms: " << std::chrono::duration_cast<ms>(t1 - t0).count() << "\n";
 
   return 0;
