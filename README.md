@@ -88,6 +88,15 @@ Numbers corresponds to chapter numbers from book.
 | 17-4 | `Vector` class with an initializer-list constructor and `Count` type constructor | 1 | Done |
 | 17-5 | Simple document editor | 3 | TODO |
 | 17-6 | Simple `Matrix` based on ch.17.5.2 | 3 | Done |
+| **18** | **Overloading** | | |
+| 18-1 | Describe conversions | 2 | TODO |
+| 18-2 | Complete and test class `String` from ch.19.3 (Why is it here?) | 2 | TODO |
+| 18-9 | Define a class `Vec4` | 2 | TODO |
+| 18-10 | Define a class `Mat4` and Gaussian elimination | 3 | TODO |
+| 18-11 | Define a class `Vector` similar to `Vec4` but with size | 2 | TODO |
+| 18-12 | Define a class `Matrix` similar to `Mat4` but with size | 3 | TODO |
+| 18-13 | Pointer to member | 1 | TODO |
+| 18-14 | Define a class `Index` for an exponent and `2**I`  | 1.5 | TODO |
 
 ## TODO
 1. Add each file and directory
