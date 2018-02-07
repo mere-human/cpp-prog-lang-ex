@@ -96,7 +96,7 @@ Numbers corresponds to chapter numbers from book.
 | 18-11 | Define a class `Vector` similar to `Vec4` but with size | 2 | TODO |
 | 18-12 | Define a class `Matrix` similar to `Mat4` but with size | 3 | TODO |
 | 18-13 | Pointer to member | 1 | TODO |
-| 18-14 | Define a class `Index` for an exponent and `2**I`  | 1.5 | TODO |
+| 18-14 | Define a class `Index` for an exponent and `2**I`  | 1.5 | Done |
 
 ## TODO
 1. Add each file and directory
