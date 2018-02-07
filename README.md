@@ -91,6 +91,7 @@ Numbers corresponds to chapter numbers from book.
 | **18** | **Overloading** | | |
 | 18-1 | Describe conversions | 2 | TODO |
 | 18-2 | Complete and test class `String` from ch.19.3 (Why is it here?) | 2 | TODO |
+| 18-4 | Define a class `RINT` that behaves like an int except limited operators | 1 | TODO |
 | 18-9 | Define a class `Vec4` | 2 | TODO |
 | 18-10 | Define a class `Mat4` and Gaussian elimination | 3 | TODO |
 | 18-11 | Define a class `Vector` similar to `Vec4` but with size | 2 | TODO |
