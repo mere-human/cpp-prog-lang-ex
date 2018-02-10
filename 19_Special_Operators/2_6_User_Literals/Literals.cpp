@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <string>
-#include <cstdint>
 
 std::string operator""_str(const char* p)
 {
@@ -16,21 +15,21 @@ std::string operator""_str2(const char* p, size_t n)
   return std::string{ p, n };
 }
 
-template<uint64_t n>
-constexpr uint64_t b3_helper()
+template<int n>
+constexpr int b3_helper() // terminal
 {
   return n;
 }
 
-template<uint64_t n, char c, char... tail>
-constexpr uint64_t b3_helper()
+template<int n, char c, char... tail>
+constexpr int b3_helper() // peel off one digit
 {
   static_assert(c < '3', "not a ternary digit");
   return b3_helper<3 * n + c - '0', tail...>();
 }
 
 template<char... chars>
-constexpr uint64_t operator""_b3() // base 3
+constexpr int operator""_b3() // base 3
 {
   return b3_helper<0, chars...>();
 }
