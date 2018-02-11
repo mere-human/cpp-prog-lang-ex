@@ -98,6 +98,11 @@ Numbers corresponds to chapter numbers from book.
 | 18-12 | Define a class `Matrix` similar to `Mat4` but with size | 3 | TODO |
 | 18-13 | Pointer to member | 1 | TODO |
 | 18-14 | Define a class `Index` for an exponent and `2**I`  | 1.5 | Done |
+| **19** | **Special Operations** | | |
+| 19-1 | Complete class `Ptr` from ch.19.2.4 | 2 | TODO |
+| 19-2 | Define an external iterator for class `String` | 2 | TODO |
+| 19-3 | Provide a substring operator for `String` by overloading `()` | 1.5 | TODO |
+| 19-4 | Design class `String` so that the substring operator can be used on LHS | 3 | TODO |
 
 ## TODO
 1. Add each file and directory
