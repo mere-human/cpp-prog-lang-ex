@@ -114,6 +114,8 @@ Numbers corresponds to chapter numbers from book.
 | 20-10 | Define intersect function for `Shape` that implements double dispatch | 2.5 | TODO |
 | 20-11 | Design and implement a library for writing event-driven simulations | 5 | TODO |
 | 20-14 | Outline a different implementation strategy for the `lval_box` example from ch.21.2 | 3 | TODO |
+| **21** | **Class Hierarchies** | | |
+| 21-18 | Define a graphical object class and a database object class | 3.5 | TODO |
 
 ## TODO
 1. Add each file and directory
