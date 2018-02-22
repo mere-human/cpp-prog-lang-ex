@@ -103,6 +103,17 @@ Numbers corresponds to chapter numbers from book.
 | 19-2 | Define an external iterator for class `String` | 2 | TODO |
 | 19-3 | Provide a substring operator for `String` by overloading `()` | 1.5 | TODO |
 | 19-4 | Design class `String` so that the substring operator can be used on LHS | 3 | TODO |
+| **20** | **Derived Classes** | | |
+| 20-2 | Implement a simple graphics system with `Window, Shape, Line`, etc | 3.5 | TODO |
+| 20-3 | Implement operations to vary the appearance of the `Shape` segments | 2 | TODO |
+| 20-4 | Provide a function `Line::arrowhead()` | 2.5 | TODO |
+| 20-5 | Make sure that points and line segments that fall outside the `Window` do not appear on the screen | 3.5 | TODO |
+| 20-6 | Add a `Text` type to the graphics system | 2.5 | TODO |
+| 20-7 | Define a function that draws a line connecting two shapes | 2 | TODO |
+| 20-8 | Add a notion of color to the graphics system | 3 | TODO |
+| 20-10 | Define intersect function for `Shape` that implements double dispatch | 2.5 | TODO |
+| 20-11 | Design and implement a library for writing event-driven simulations | 5 | TODO |
+| 20-14 | Outline a different implementation strategy for the `lval_box` example from ch.21.2 | 3 | TODO |
 
 ## TODO
 1. Add each file and directory
