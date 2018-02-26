@@ -116,6 +116,10 @@ Numbers corresponds to chapter numbers from book.
 | 20-14 | Outline a different implementation strategy for the `lval_box` example from ch.21.2 | 3 | TODO |
 | **21** | **Class Hierarchies** | | |
 | 21-18 | Define a graphical object class and a database object class | 3.5 | TODO |
+| **22** | **Run-Time Type Information** | | |
+| 22-2 | RTTI constructor call sequence | 2 | TODO |
+| 22-3 | Alternative implementation of `dynamic_cast` | 3 | TODO |
+| 22-4 | Extended type information usage | 3 | TODO |
 
 ## TODO
 1. Add each file and directory
