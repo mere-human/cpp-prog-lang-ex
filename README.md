@@ -120,6 +120,13 @@ Numbers corresponds to chapter numbers from book.
 | 22-2 | RTTI constructor call sequence | 2 | TODO |
 | 22-3 | Alternative implementation of `dynamic_cast` | 3 | TODO |
 | 22-4 | Extended type information usage | 3 | TODO |
+| **23** | **Templates** | | |
+| 23-1 | Fix the errors in `List` from ch.23.3.2. Compare it to hand-generated code for template | 2 | TODO |
+| 23-2 | Write an intrusive singly-linked list that accepts `Link`. Compare it to non-intrusive list | 3 | TODO | 
+| 23-4 | Complete the `String` template from ch.23.2 based on ch.19.3 | 2 | TODO |
+| **25** | **Generic Programming** | | |
+| 25-1 | Write functions to print an array with C-style strings and a `list<string>`. Lift the algorithm for any sequence | 3 | TODO |
+
 
 ## TODO
 1. Add each file and directory
