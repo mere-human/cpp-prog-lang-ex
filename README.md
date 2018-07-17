@@ -104,7 +104,7 @@ Numbers corresponds to chapter numbers from book.
 | 19-3 | Provide a substring operator for `String` by overloading `()` | 1.5 | TODO |
 | 19-4 | Design class `String` so that the substring operator can be used on LHS | 3 | TODO |
 | **20** | **Derived Classes** | | |
-| 20-2 | Implement a simple graphics system with `Window, Shape, Line`, etc | 3.5 | TODO |
+| 20-2 | Implement a simple graphics system with `Window, Shape, Line`, etc | 3.5 | In dev |
 | 20-3 | Implement operations to vary the appearance of the `Shape` segments | 2 | TODO |
 | 20-4 | Provide a function `Line::arrowhead()` | 2.5 | TODO |
 | 20-5 | Make sure that points and line segments that fall outside the `Window` do not appear on the screen | 3.5 | TODO |
