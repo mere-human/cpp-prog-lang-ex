@@ -6,8 +6,8 @@ Numbers corresponds to chapter numbers from book.
 
 ### Table of exercises done or to be done
 
-| No  | Desc | Complexity | Status |
-|:--- |:----|:--------- |:----- |
+| Number | Description | Complexity | Status |
+|:------:|:------------|:----------:|:------:|
 | **6** | **Types and Declarations**                     |     |      |
 | 6-1  | "Hello, world!"                                 | 2   | Done |
 | 6-2  | Determine whether `char` is signed or not         | 1   | Done |
