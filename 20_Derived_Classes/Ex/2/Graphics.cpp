@@ -33,7 +33,7 @@ As a simple test, display a simple "child’s drawing of a house" with a roof,
 two windows, and a door
 */
 
-#include <Windows.h>
+#include "WinApp.h"
 
 struct Point
 {
@@ -114,21 +114,27 @@ public:
 
 class Window
 {
+	windows::WindowHandle handle = nullptr;
 	int h;
 	int w;
 public:
 	Window(int height, int width)
 		: h{ height }, w{ width }
-	{}
+	{
+		handle = windows::WindowNew("Title", w, h);
+	}
 	void draw(const Shape& shape)
-	{}
+	{
+		// TODO
+	}
+	void show()
+	{
+		windows::WindowShow(handle);
+	}
 };
 
 int main()
 {
-	Window w(200, 200);
-	w.draw(Line({ 10, 10 }, { 30, 30 }));
-
 	// TODO: figure out where to put platform-specific code and how to integrate it with these classes.
 	// Win32:
 	// I do not want to change subsystem from console to windows.
@@ -136,11 +142,12 @@ int main()
 	// So, probably, it will be just a console which spawns a GUI window.
 	// However, it could be done easier if the whole project uses CMake.
 	// Then each directory could have it's own settings, etc.
-	//int msgboxID = MessageBox(
-	//	NULL,
-	//	L"temp.txt already exists.\nDo you want to replace it?",
-	//	L"Confirm Save As",
-	//	MB_ICONEXCLAMATION | MB_YESNO
-	//);
+
+	if (!windows::InitApp())
+		return 1;
+	Window w(200, 200);
+	w.draw(Line({ 10, 10 }, { 30, 30 }));
+	w.show();
+	windows::RunMessageLoop();
 	return 0;
 }
