@@ -6,6 +6,7 @@ namespace
 {
 	static HMODULE g_hInstance = nullptr;
 	static const char g_mainWindowClassName[] = "MainWindowClass";
+	static windows::Callback g_callback;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -14,6 +15,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 		MessageBox(hWnd, "WM_LBUTTONDOWN", "WM_LBUTTONDOWN", 0);
+		break;
+	case WM_PAINT:
+		if (g_callback)
+			g_callback();
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -65,14 +70,29 @@ bool windows::InitApp()
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = g_hInstance;
 	wc.lpszClassName = g_mainWindowClassName;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
 	if (!RegisterClassEx(&wc))
 		return false;
 	return true;
 }
 
-void windows::WindowShow(windows::WindowHandle wnd)
+void windows::WindowShow(windows::WindowHandle wnd, Callback cb)
 {
+	g_callback = cb;
 	ShowWindow(reinterpret_cast<HWND>(wnd), SW_SHOW);
+}
+
+void windows::DrawLine(WindowHandle wnd, int xStart, int yStart, int xEnd, int yEnd)
+{
+	PAINTSTRUCT ps = {};
+	auto hWnd = reinterpret_cast<HWND>(wnd);
+	auto hdc = BeginPaint(hWnd, &ps);
+	auto hprev = SelectObject(hdc, GetStockObject(BLACK_PEN));
+	MoveToEx(hdc, xStart, yStart, nullptr);
+	LineTo(hdc, xEnd, yEnd);
+	SelectObject(hdc, hprev);
+	EndPaint(hWnd, &ps);
 }
 
 void windows::WindowMove(WindowHandle wnd, int dx, int dy)

@@ -34,6 +34,7 @@ two windows, and a door
 */
 
 #include "WinApp.h"
+#include <vector>
 
 struct Point
 {
@@ -59,6 +60,7 @@ public:
 	virtual Point c() const = 0;
 };
 
+// TODO: normalization
 class Line : public Shape
 {
 	Point a;
@@ -68,17 +70,17 @@ public:
 		: a{ start }, b{ end }
 	{}
 
-	Point e() const override { return a; }
+	Point e() const override { return b; }
 	Point w() const override { return a; }
-	Point n() const override { return a; }
-	Point s() const override { return a; }
+	Point n() const override { return {}; }
+	Point s() const override { return {}; }
 
-	Point ne() const override { return a; }
-	Point nw() const override { return a; }
-	Point se() const override { return a; }
-	Point sw() const override { return a; }
+	Point ne() const override { return {}; }
+	Point nw() const override { return {}; }
+	Point se() const override { return {}; }
+	Point sw() const override { return {}; }
 
-	Point c() const override { return a; }
+	Point c() const override { return {}; }
 };
 
 class Dot : public Shape
@@ -89,35 +91,64 @@ public:
 		: p{ pt }
 	{}
 
-	Point e() const override { return p; }
-	Point w() const override { return p; }
-	Point n() const override { return p; }
-	Point s() const override { return p; }
+	Point e() const override { return {}; }
+	Point w() const override { return {}; }
+	Point n() const override { return {}; }
+	Point s() const override { return {}; }
 
-	Point ne() const override { return p; }
-	Point nw() const override { return p; }
-	Point se() const override { return p; }
-	Point sw() const override { return p; }
+	Point ne() const override { return {}; }
+	Point nw() const override { return {}; }
+	Point se() const override { return {}; }
+	Point sw() const override { return {}; }
 
 	Point c() const override { return p; }
 };
 
+// TODO: normalization
 class Rectangle : public Shape
 {
-	Point tr;
-	Point bl;
+	Point top_right;
+	Point bottom_left;
 public:
-	Rectangle(const Point& top_right, const Point& bottom_left)
-		: tr{ top_right }, bl{ bottom_left }
+	Rectangle(const Point& top_right_, const Point& bottom_left_)
+		: top_right{ top_right_ }, bottom_left{ bottom_left_ }
 	{}
+
+	Point e() const override { return {}; }
+	Point w() const override { return {}; }
+	Point n() const override { return {}; }
+	Point s() const override { return {}; }
+
+	Point ne() const override { return {}; }
+	Point nw() const override { return top_right; }
+	Point se() const override { return bottom_left; }
+	Point sw() const override { return {}; }
+
+	Point c() const override { return {}; }
 };
 
 class Window
 {
+	using Polyline = std::vector<Point>;
+	std::vector<Polyline> objects;
 	windows::WindowHandle handle = nullptr;
 	Point pos;
 	int h;
 	int w;
+	void on_redraw()
+	{
+		for (const auto& obj : objects)
+		{
+			for (size_t i = 1; i < obj.size(); ++i)
+			{
+				const auto& start = obj[i - 1];
+				const auto& end = obj[i - 1];
+				windows::DrawLine(handle, start.x, start.y,
+					end.x, end.y);
+			}
+		}
+		
+	}
 public:
 	Window(int height, int width)
 		: h{ height }, w{ width }
@@ -133,13 +164,23 @@ public:
 		windows::WindowMove(handle, pt.x-pos.x, pt.y-pos.y);
 		pos = pt;
 	}
+	// drawing: transform a shape to array of points and later show
 	void draw(const Shape& shape)
+	{
+		// TODO
+	}
+	void draw(const Line& line)
+	{
+		objects.push_back({ line.w(), line.e() });
+	}
+	void draw(const Rectangle& rect)
 	{
 		// TODO
 	}
 	void show()
 	{
-		windows::WindowShow(handle);
+		auto callback = [this]() { on_redraw(); };
+		windows::WindowShow(handle, callback);
 	}
 };
 
