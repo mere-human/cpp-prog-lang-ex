@@ -75,6 +75,15 @@ void windows::WindowShow(windows::WindowHandle wnd)
 	ShowWindow(reinterpret_cast<HWND>(wnd), SW_SHOW);
 }
 
+void windows::WindowMove(WindowHandle wnd, int dx, int dy)
+{
+	auto hWnd = reinterpret_cast<HWND>(wnd);
+	RECT rc;
+	GetWindowRect(hWnd, &rc);
+	OffsetRect(&rc, dx, dy);
+	MoveWindow(hWnd, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, TRUE);
+}
+
 //// Example:
 //int main(int, const char **av)
 //{

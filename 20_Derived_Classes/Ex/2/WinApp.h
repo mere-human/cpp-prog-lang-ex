@@ -8,6 +8,7 @@ namespace windows
 	bool InitApp();
 	WindowHandle WindowNew(const char* title, int nWidth = -1, int nHeight = -1);
 	void WindowShow(WindowHandle wnd);
+	void WindowMove(WindowHandle wnd, int dx, int dy);
 	void RunMessageLoop();
 }
 

@@ -115,6 +115,7 @@ public:
 class Window
 {
 	windows::WindowHandle handle = nullptr;
+	Point pos;
 	int h;
 	int w;
 public:
@@ -122,6 +123,15 @@ public:
 		: h{ height }, w{ width }
 	{
 		handle = windows::WindowNew("Title", w, h);
+	}
+	const Point& current() const
+	{
+		return pos;
+	}
+	void current(const Point& pt)
+	{
+		windows::WindowMove(handle, pt.x-pos.x, pt.y-pos.y);
+		pos = pt;
 	}
 	void draw(const Shape& shape)
 	{
